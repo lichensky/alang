@@ -34,10 +34,11 @@ regular expression.
 
 ## Usage
 
-Run the `whale-cleaner` command with path to config file as argument.
+Run the `whale-cleaner` command with config path as `-config` flag.
+The `-config` defaults to `./config.yaml`
 
 ```
-whale-cleaner config.yaml
+whale-cleaner -config myconfig.yaml
 ```
 
 ### Dry run
@@ -46,5 +47,5 @@ If you want to only check the result, but not actually delete images use
 `-dry` flag.
 
 ```
-whale-cleaner config.yaml -dry
+whale-cleaner -config myconfig.yaml -dry
 ```

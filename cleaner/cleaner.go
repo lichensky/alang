@@ -1,12 +1,15 @@
 package cleaner
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
 	"time"
 
+	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/google"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/sirupsen/logrus"
 )
 
@@ -41,7 +44,10 @@ func Clean(repository Repository, dry bool) error {
 	manifests := getManifestsWithRef(tags.Manifests)
 	for i, manifest := range manifests {
 		if shouldDelete(i, manifest, repository, tagsToKeepPatterns) {
-			deleteImage(manifest, dry)
+			err := deleteImage(manifest, dry, auth, repository)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -132,11 +138,42 @@ func getPatterns(stringPatterns []string) ([]*regexp.Regexp, error) {
 }
 
 // delete deletes specific image based on manifest
-func deleteImage(manifest Manifest, dry bool) {
+func deleteImage(manifest Manifest, dry bool, auth authn.Authenticator,
+	repository Repository) error {
+
 	logrus.Infof("Cleaning image with ref: %s (tags: %s)", manifest.ref,
 		manifest.manifestInfo.Tags)
 
 	if !dry {
-		// TODO do delete
+		// Delete all tags
+		for _, tag := range manifest.manifestInfo.Tags {
+			ref := fmt.Sprintf("%s:%s", repository.Name, tag)
+			err := deleteRef(ref, auth)
+			if err != nil {
+				return err
+			}
+		}
+		// Delete image
+		ref := fmt.Sprintf("%s@%s", repository.Name, manifest.ref)
+		err := deleteRef(ref, auth)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
+}
+
+// deleteRef deletes reference from remote repository
+func deleteRef(ref string, auth authn.Authenticator) error {
+	name, err := name.ParseReference(ref)
+	if err != nil {
+		return err
+	}
+
+	err = remote.Delete(name, remote.WithAuth(auth))
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
