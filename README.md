@@ -1,4 +1,4 @@
-# whale-cleaner
+# alang
 
 Tool for cleaning docker images from remote repositories.
 
@@ -34,11 +34,11 @@ regular expression.
 
 ## Usage
 
-Run the `whale-cleaner` command with config path as `-config` flag.
+Run the `alang` command with config path as `-config` flag.
 The `-config` defaults to `./config.yaml`
 
 ```
-whale-cleaner -config myconfig.yaml
+alang -config myconfig.yaml
 ```
 
 ### Dry run
@@ -47,5 +47,10 @@ If you want to only check the result, but not actually delete images use
 `-dry` flag.
 
 ```
-whale-cleaner -config myconfig.yaml -dry
+alang -config myconfig.yaml -dry
 ```
+
+## Why alang?
+
+[Alang](https://en.wikipedia.org/wiki/Alang) is a town which have become a major
+worldwide centre for ship breaking.

@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"whale-cleaner/cleaner"
+	"alang/cleaner"
 
 	"github.com/sirupsen/logrus"
 )

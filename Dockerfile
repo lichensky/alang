@@ -20,12 +20,12 @@ COPY go.mod go.sum /code/
 RUN go mod download
 
 COPY . /code
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s" -o /whale-cleaner cmd/cleaner/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s" -o /alang cmd/alang/main.go
 
 FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder /whale-cleaner /whale-cleaner
+COPY --from=builder /alang /alang
 USER appuser:appuser
-ENTRYPOINT ["/whale-cleaner"]
+ENTRYPOINT ["/alang"]

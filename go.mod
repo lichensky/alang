@@ -1,4 +1,4 @@
-module whale-cleaner
+module alang
 
 go 1.13
 
